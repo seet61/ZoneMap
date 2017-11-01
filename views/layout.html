@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>YourWave Radio</title>
+
+  <!-- CSS  -->
+  <link href="stylesheets/icon.css" rel="stylesheet">
+  <link href="stylesheets/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="stylesheets/custom.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+  <!--  Scripts-->
+  <script src="javascripts/jquery-2.2.1.min.js"></script>
+  <script src="javascripts/materialize.js"></script>
+  <script src="javascripts/custom.js"></script>
+</head>
+<body>
+  <div id="background"></div>
+
+  <div id="content">
+    <ul id="dropdown1" class="dropdown-content">
+      <li><a href="/about" class="blue-text">О Нас</a></li>
+    </ul>
+
+    <nav class="lighten-1" role="navigation">
+      <ul class="right hide-on-med-and-down">
+        <li><a class="dropdown-button blue-text" href="#!" data-activates="dropdown1">Информация<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+
+      <a href="/" class="brand-logo center blue-text">YourWave Radio</a>
+
+      {{#block_menu}}
+        <ul id="slide-out" class="side-nav">
+          {{#data}}
+            <li><a class="blue-text" onclick="startStream('{{title}}', '{{url}}', '{{img}}')">{{title}}</a></li>
+          {{/data}}
+        </ul>
+        <a href="#" data-activates="slide-out" class="button-collapse show-on-large blue-text"><i class="mdi-navigation-menu"></i></a>
+      {{/block_menu}}
+    </nav>
+
+    <main>
+      <!-- Parts of templates-->
+      {{#template_index}}
+        {{> index }}
+      {{/template_index}}
+    </main>
+
+    </div>
+  </body>
+</html>

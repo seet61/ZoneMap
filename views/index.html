@@ -1,0 +1,74 @@
+<div class="section no-pad-bot" id="index-banner">
+  <div class="container">
+    <br><br>
+    <h1 class="header center blue-text">Добро пожаловать</h1>
+    <div class="row center">
+      <h4 class="header col s12 light flow-text blue-text">Данный сервис поможет Вам слушать различные радиостанции со всего мира</h4>
+    </div>
+
+    <div class="row">
+      <div class="col s12">
+        <ul class="tabs">
+          <li class="tab col s6"><a class="active" href="#select">Выбор по жанру</a></li>
+          <li class="tab col s6"><a href="#search">Поиск станции</a></li>
+        </ul>
+      </div>
+      <div id="select" class="col s12">
+        <div class="row">
+          <div class="row center">
+            <form class="col s12" action="/streams" method="post">
+              <div class="row">
+                  <div class="input-field col s6">
+                    <select id="category_id" name="category_id">
+                      <option value="" disabled selected>Выберите жанр</option>
+                      {{#categories}}
+                        <option value={{id}}>{{title}}</option>
+                      {{/categories}}
+                    </select>
+                    <label>Жанры</label>
+                  </div>
+                  <div class="input-field col s6">
+                    <select id="country_code" name="country_code">
+                      <option value="" disabled selected>Выберите страну</option>
+                      {{#countries}}
+                        <option value={{code2}}>{{rus_name}}</option>
+                      {{/countries}}
+                    </select>
+                    <label>Страны</label>
+                  </div>
+              </div>
+              <div class="row center">
+                <button class="btn waves-effect waves-light blue" type="submit" name="action">Выбрать
+                  <i class="material-icons right blue">send</i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div id="search" class="col s12">
+        <div class="row">
+          <div class="row center">
+            <form class="col s12" action="/search" method="post">
+              <div class="row">
+                <div class="input-field col s12">
+                  <input placeholder="Введите название станции" id="search_name" name="search_name" type="text" class="validate">
+                  <label for="search_name">Поиск станции</label>
+                </div>
+              </div>
+              <div class="row center">
+                <button class="btn waves-effect waves-light blue" type="submit" name="action">Выбрать
+                  <i class="material-icons right blue">send</i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <br><br>
+
+  </div>
+</div>

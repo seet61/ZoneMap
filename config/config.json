@@ -1,0 +1,17 @@
+{	
+	"debug" : true,
+	"ZoneMap": {
+		"siteConfig": {
+			"host": "10.78.251.72",
+			"port": "3000"
+		},
+		"dbConfig": {
+			"host": "10.78.221.58",
+			"port": "5432",
+			"dbName": "testZoneDB",
+			"username": "testZone",
+			"password": "testZone",
+			"connectionString": "postgres://testZone:testZone@10.78.221.58:5432/testZoneDB"
+		}
+	}
+}
