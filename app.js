@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 var mustacheExpress = require('mustache-express');
 var fs = require('fs');
 var FileStreamRotator = require('file-stream-rotator')
@@ -37,7 +38,6 @@ var accessLogStream = FileStreamRotator.getStream({
 logger.token('date', function(){
   return new Date().toString()
 })
-
 // log all requests to access.log
 app.use(logger('combined', {stream: accessLogStream}))
 
@@ -50,7 +50,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+    secret: '2C44-4D44-WppQ38S',
+    resave: true,
+    saveUninitialized: true
+}));
 
+//routes
 app.use('/', index);
 //app.use('/users', users);
 

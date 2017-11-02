@@ -11,6 +11,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "express-session": "^1.15.6",
     "file-stream-rotator": "^0.2.0",
     "fs": "0.0.1-security",
     "morgan": "~1.9.0",

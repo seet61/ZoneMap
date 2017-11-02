@@ -1,3 +1,3 @@
 set NODE_ENV=config
-set DEBUG=radio:* 
+set DEBUG=ZoneMap:* 
 npm start
