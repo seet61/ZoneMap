@@ -7,7 +7,8 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var mustacheExpress = require('mustache-express');
 var fs = require('fs');
-var FileStreamRotator = require('file-stream-rotator')
+var FileStreamRotator = require('file-stream-rotator');
+var debug = require('debug')('zonemap:app');
 
 //Rules for routes
 var index = require('./routes/index');
@@ -75,10 +76,22 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error.html', {
+  /*res.render('error.html', {
     message: err.message,
-    error: {}
-  });
+    status: err.status,
+    error: err
+  });*/
+
+  var view = {
+    "template_error": true,
+    "message": err.message,
+    "status": err.status,
+    "error": err
+  };
+  debug("message: " + err.message);
+  debug("status: " + err.status);
+  debug("err: " + err.err);
+  res.render('layout.html', view);
 });
 
 module.exports = app;

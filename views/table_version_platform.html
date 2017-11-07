@@ -1,0 +1,25 @@
+<table class="table table-striped table-bordered table-hover">
+  <caption>Таблица версий окружения Platform V3</caption>
+  <thead class="btn-inverse">
+    <tr>
+      <th>host ip</th>
+      <th>service name</th>
+      <th>service type</th>
+      <th>service version</th>
+      <th>system name</th>
+      <th>system version</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{{#versions}}
+  		<tr>
+	      <td>{{host_ip}}</td>
+	      <td>{{service_name}}</td>
+	      <td>{{service_type}}</td>
+	      <td>{{service_version}}</td>
+	      <td>{{system_name}}</td>
+	      <td>{{system_version}}</td>
+	    </tr>
+  	{{/versions}}
+  </tbody>
+</table>
