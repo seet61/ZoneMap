@@ -120,4 +120,18 @@ router.get('/graph', auth, function(req, res, next) {
 	});
 });
 
+router.get('/graph_platform_data', auth, function(req, res, next) {
+	debug('/graph_platform_data get: ' + req.query.serv_id);
+	//var json_data = {};
+	db.get_list_services(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.host_ip, function(list_services){
+		//json_data = JSON.stringify(list_services);
+		res.status(200).json(list_services);
+	});
+	//debug('list_data: ' + json_data);
+	/*for (var i = 0; i < list_data.length; i++) {
+		debug('list_data ' + i + ":" + list_data[i]['service_name']);
+	}*/
+	
+});
+
 module.exports = router;

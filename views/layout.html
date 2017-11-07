@@ -31,6 +31,15 @@
 
   <body>
     {{> menu }}
+    <div id='alert' class="row" hidden=true>
+      <div class="span6 offset7">
+        <div id='alert_message' class="alert alert-error btn-small">
+          <!-- <button type="button" class="close" data-dismiss="alert">x</button> -->
+          <button type="button" class="close" aria-hidden="true" data-dismiss="alert">&times;</button>
+          <strong>Ошибка!</strong> {{ error_text }}
+        </div>
+      </div>
+    </div>  
     {{#error_block}}
     <div class="row">
       <div class="span6 offset7">
