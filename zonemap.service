@@ -1,0 +1,21 @@
+[Unit]
+Description=ZoneMap
+#Requires=After=mysql.service       # Requires the mysql service to run first
+
+[Service]
+ExecStart=/opt/nodejs/bin/node /opt/ZoneMap/bin/www
+# Required on some systems
+WorkingDirectory=/opt/ZoneMap
+Restart=always
+# Restart service after 10 seconds if node service crashes
+RestartSec=10
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodejs-example
+#User=<alternate user>
+#Group=<alternate group>
+Environment=NODE_ENV=config
+
+[Install]
+WantedBy=multi-user.target

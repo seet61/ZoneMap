@@ -52,7 +52,7 @@ router.post('/login', function(req, res, next) {
 		var passwd = req.body.password;
 
 		// Bind as the user
-		var adClient = ldap.createClient({
+		/*var adClient = ldap.createClient({
 			url: url
 		});
 		adClient.bind(userPrincipalName, passwd, function(err) {
@@ -76,12 +76,12 @@ router.post('/login', function(req, res, next) {
 	        } else {
 	        	req.session.authenticated = true;
 				res.redirect('/');
-	        }});
+	        }});*/
 
-		/* //dev
+		 //dev
 		req.session.authenticated = true;
 		res.redirect('/');
-		*/
+		
 	}
 });
 
@@ -110,10 +110,14 @@ router.get('/table_version_platform', auth, function(req, res, next) {
 // GET graph page
 router.get('/graph', auth, function(req, res, next) {
 	debug('/graph get: ' + req.session);
-	var view = {
-		"template_graph": true,
-	};
-	res.render('layout.html', view);
+	db.get_init_servers(config.get('ZoneMap.dbConfig.connectionString'), function(init_servers){
+		debug('init_servers: ' + init_servers);
+		var view = {
+			"template_graph": true,
+			"init_servers": init_servers
+		};
+		res.render('layout.html', view);
+	});
 });
 
 module.exports = router;

@@ -1,3 +1,5 @@
+var treeData = {};
+
 function get_data() {
   $('#get_data').button('loading');
   setTimeout(function() {
@@ -6,7 +8,7 @@ function get_data() {
 }
 
 function get_graph() {
-  var treeData =
+  treeData =
     {
    "name": "flare",
    "children": [
