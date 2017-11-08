@@ -1,5 +1,5 @@
 var treeData = {};
-var infoArray = [];
+var serviceArray = [];
 var progress = 10;
 var step = 10;
 
@@ -41,6 +41,7 @@ function onGetDataSuccess(data) {
   var infoData = JSON.parse(data);
   step = 90/parseInt(infoData["children"].length);
   console.log('infoData step: ' + step);
+  var infoArray = [];
   for (var i = 0; i < infoData["children"].length; i++) {
     console.log('data: ' + infoData["children"][i]["name"]);
     serviceArray = [];
@@ -88,6 +89,7 @@ function onGetDataSuccess(data) {
     }
     
     //console.log('serviceArray: ' + serviceArray);
+
     infoArray.push({"name" : infoData["children"][i]["name"], "children" : serviceArray});
     //add progress bar status
     progress += step;

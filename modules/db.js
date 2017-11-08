@@ -8,7 +8,7 @@ function get_versions(connect_string, versions) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    client.query('select host_ip, service_name, service_type, service_version, data_port, http_port, service_port, system_name, system_version from public.init_servers ins, public.server_services sss where ins.serv_id = sss.serv_id', function(err, result) {
+    client.query('select host_ip, service_name, service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base from public.init_servers ins, public.server_services sss where ins.serv_id = sss.serv_id and sss.end_date>current_date', function(err, result) {
       //call `done()` to release the client back to the pool
       done();
 
@@ -100,6 +100,7 @@ function get_about(connect_string, serv_id, service_name, about_service) {
       about_array.push({"name" : 'service port', "children" : [{"name": result.rows[0]['service_port']}]});
       about_array.push({"name" : 'system name', "children" : [{"name": result.rows[0]['system_name']}]});
       about_array.push({"name" : 'system version', "children" : [{"name": result.rows[0]['system_version']}]});
+      about_array.push({"name" : 'database', "children" : [{"name": result.rows[0]['data_base']}]});
       debug('about_array: ' + about_array);
       about_service(about_array);
     });
