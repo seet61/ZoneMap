@@ -120,18 +120,42 @@ router.get('/graph', auth, function(req, res, next) {
 	});
 });
 
-router.get('/graph_platform_data', auth, function(req, res, next) {
-	debug('/graph_platform_data get: ' + req.query.serv_id);
-	//var json_data = {};
+// Получение списка сервисов на сервере
+router.get('/platform_services', auth, function(req, res, next) {
+	debug('/platform_services get: ' + req.query.serv_id);
 	db.get_list_services(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.host_ip, function(list_services){
-		//json_data = JSON.stringify(list_services);
 		res.status(200).json(list_services);
 	});
-	//debug('list_data: ' + json_data);
-	/*for (var i = 0; i < list_data.length; i++) {
-		debug('list_data ' + i + ":" + list_data[i]['service_name']);
-	}*/
-	
+});
+
+// Получение информации о сервисе и главной конфигурации
+router.get('/service_about', auth, function(req, res, next) {
+	debug('/service_about get: ' + req.query.serv_id + " " + req.query.service_name);
+	db.get_about(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.service_name, function(about_service){
+		res.status(200).json(JSON.stringify({"name":"About", "children" : about_service}));
+	});
+});
+
+// Получение групп АА для SG
+router.get('/service_aa', auth, function(req, res, next) {
+	debug('/service_aa get: ' + req.query.serv_id + " " + req.query.service_name);
+	var infoArray = [];
+	db.get_service_id(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.service_name, function(service_id){
+		db.get_aa(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, function(list_aa){
+			res.status(200).json(JSON.stringify({"name":"AA Groups", "children" : list_aa}));
+		});
+	});
+});
+
+// Получение списка артифактов для LWSA & SLES
+router.get('/service_artifacts', auth, function(req, res, next) {
+	debug('/service_artifacts get: ' + req.query.serv_id + " " + req.query.service_name);
+	var infoArray = [];
+	db.get_service_id(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.service_name, function(service_id){
+		db.get_artifacts(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, function(list_artifacts){
+			res.status(200).json(JSON.stringify({"name":"Artifacts", "children" : list_artifacts}));
+		});
+	});
 });
 
 module.exports = router;

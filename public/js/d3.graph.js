@@ -1,4 +1,5 @@
 var treeData = {};
+var infoArray = [];
 var progress = 10;
 var step = 10;
 
@@ -19,7 +20,7 @@ function get_data() {
   $('#bar').attr('style', "width: 1%;");
   $.ajax({
     dataType: "json",
-    url: "/graph_platform_data",
+    url: "/platform_services",
     data: {
       serv_id : $('#init_servers option:selected').attr('value'),
       host_ip : $('#init_servers option:selected').text()
@@ -34,34 +35,93 @@ function onError() {
   console.log('Ошибка получения информации!');
 }
 
-function onGetDataSuccess(data)
-{
+function onGetDataSuccess(data) {
   // Здесь мы получаем данные, отправленные сервером и выводим их на экран.
   $('#bar').attr('style', "width: " + progress + "%;");
-  treeData = JSON.parse(data);
-  console.log('data: ' + treeData["children"][0]["name"]);
-  step = 90 / treeData.length;
-  /*for (var i = 0; i < treeData.length; i++) {
+  var infoData = JSON.parse(data);
+  step = 90/parseInt(infoData["children"].length);
+  console.log('infoData step: ' + step);
+  for (var i = 0; i < infoData["children"].length; i++) {
+    console.log('data: ' + infoData["children"][i]["name"]);
+    serviceArray = [];
+    /*global serviceArray + i = [];*/
+    //Информация о
     $.ajax({
       dataType: "json",
-      url: "/graph_service_info",
+      async: false,
+      url: "/service_about",
       data: {
         serv_id : $('#init_servers option:selected').attr('value'),
-        host_ip : $('#init_servers option:selected').text()
+        service_name : infoData["children"][i]["name"]
       },
-      success: onGetDataSuccess,
+      success: onGeServiceInfo,
       error: onError
     });
-  }*/
-  setTimeout(function() {
-    $('#progress_bar').attr('hidden', true);
-    $('#get_data').button('reset');
-    get_graph();
-  }, 1000);
+    //Получение групп АА для SG
+    //console.log('infoData["children"][i]["name"].includes("SG"): ' + infoData["children"][i]["name"].includes("SG") );
+    if (infoData["children"][i]["name"].includes("SG")) {
+      $.ajax({
+      dataType: "json",
+      async: false,
+      url: "/service_aa",
+      data: {
+        serv_id : $('#init_servers option:selected').attr('value'),
+        service_name : infoData["children"][i]["name"]
+      },
+      success: onGeServiceInfo,
+      error: onError
+    });
+    }
+    //Получение списка артефактов для SLES & LWSA 
+    if (infoData["children"][i]["name"].includes("SLES") || infoData["children"][i]["name"].includes("LWSA")) {
+      $.ajax({
+      dataType: "json",
+      async: false,
+      url: "/service_artifacts",
+      data: {
+        serv_id : $('#init_servers option:selected').attr('value'),
+        service_name : infoData["children"][i]["name"]
+      },
+      success: onGeServiceInfo,
+      error: onError
+    });
+    }
+    
+    //console.log('serviceArray: ' + serviceArray);
+    infoArray.push({"name" : infoData["children"][i]["name"], "children" : serviceArray});
+    //add progress bar status
+    progress += step;
+    $('#bar').attr('style', "width: " + progress + "%;");
+  }
+  //Ждем загрузки всей инфы
+  var checkExist = setInterval(function() {
+    console.log('processing...' + progress + '%');
+    if (parseInt(progress) > 99) {
+        clearInterval(checkExist);
+        console.log('infoData is done! ' + progress + " " + step);
+        treeData = {"name" : $('#init_servers option:selected').text(), "children" : []}
+        treeData["children"] = infoArray;
+        setTimeout(function() {
+          $('#progress_bar').attr('hidden', true);
+          $('#get_data').button('reset');
+          get_graph();
+        }, 500);  
+     }
+    }, 50); // check every 50ms
+  
+}
+
+function onGeServiceInfo(data) {
+  /* Получение информации о сервисе */
+  //console.log('onGeServiceInfo i: ' + i);
+  var infoService = JSON.parse(data);
+  //console.log('infoService infoArray:' + infoArray);
+  serviceArray.push(infoService);
+  //console.log('infoService infoArray:' + JSON.stringify(infoArray));
 }
 
 function get_graph() {
-
+  //console.log("treeData: " + JSON.stringify(treeData));
   // Set the dimensions and margins of the diagram
   var margin = {top: 20, right: 90, bottom: 30, left: 90},
       width = 960 - margin.left - margin.right,
