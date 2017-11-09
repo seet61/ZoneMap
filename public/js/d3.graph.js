@@ -87,10 +87,22 @@ function onGetDataSuccess(data) {
       error: onError
     });
     }
-    $.ajax({
+    //Получение роутов (проблема с отображением)
+    /*$.ajax({
       dataType: "json",
       async: false,
       url: "/service_routing",
+      data: {
+        serv_id : $('#init_servers option:selected').attr('value'),
+        service_name : infoData["children"][i]["name"]
+      },
+      success: onGeServiceInfo,
+      error: onError
+    });*/
+    $.ajax({
+      dataType: "json",
+      async: false,
+      url: "/service_externals",
       data: {
         serv_id : $('#init_servers option:selected').attr('value'),
         service_name : infoData["children"][i]["name"]
@@ -128,17 +140,17 @@ function onGeServiceInfo(data) {
   /* Получение информации о сервисе */
   //console.log('onGeServiceInfo i: ' + i);
   var infoService = JSON.parse(data);
-  //console.log('infoService infoArray:' + infoArray);
+  //console.log('infoService infoArray:' + infoService);
   serviceArray.push(infoService);
-  //console.log('infoService infoArray:' + JSON.stringify(infoArray));
+  console.log('infoService:' + JSON.stringify(infoService));
 }
 
 function get_graph() {
   //console.log("treeData: " + JSON.stringify(treeData));
   // Set the dimensions and margins of the diagram
   var margin = {top: 20, right: 90, bottom: 30, left: 90},
-      width = window.innerWidth - margin.left - margin.right - 100,
-      height = window.innerHeight - margin.top - margin.bottom - 200;
+      width = window.innerWidth - margin.left*2 - margin.right*2,
+      height = window.innerHeight - margin.top*4 - margin.bottom*5 ;
 
   // append the svg object to the body of the page
   // appends a 'group' element to 'svg'

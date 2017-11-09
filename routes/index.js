@@ -5,6 +5,7 @@ var ldap = require('ldapjs');
 var db = require('../modules/db');
 var config  = require('config');
 
+var distinct = [];
 
 // Authentication and Authorization Middleware
 var auth = function(req, res, next) {
@@ -158,15 +159,54 @@ router.get('/service_artifacts', auth, function(req, res, next) {
 	});
 });
 
-// Получение списка артифактов для LWSA & SLES
+function set_distinct_groups(distinct_groups) {
+	distinct = distinct_groups;
+	//debug("get_distinct_groups: " + JSON.stringify(distinct));
+}
+
+function clear_distinct() {
+	distinct = [];
+}
+
+function get_distinct_groups() {
+	return distinct;
+}
+
+// Получение списка роутов
 router.get('/service_routing', auth, function(req, res, next) {
 	debug('/service_routing get: ' + req.query.serv_id + " " + req.query.service_name);
-	var infoArray = [];
+	var list_routes = [];
 	db.get_service_id(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.service_name, function(service_id){
-		db.get_routing(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, function(list_routes){
+		db.get_distinct_routs(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, function(distinct_routs){
+			//debug("get_distinct_routs distinct_routs: " + distinct_routs);
+			for (var i = 0; i < distinct_routs.length; i++) {
+				//debug("get_distinct_routs distinct_rout: " +  distinct_routs[i]);
+				//distinct = [];
+				//
+				db.get_distinct_groups(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, distinct_routs[i], function(distinct_groups) {
+					//debug('get_distinct_groups distinct_groups:' + distinct_groups);
+					clear_distinct();
+					//set_distinct_groups(distinct_groups);
+				});
+
+				debug('distinct: ' + JSON.stringify(distinct));
+				list_routes.push({"name" : distinct_routs[i], "children" : get_distinct_groups()});
+			}
 			res.status(200).json(JSON.stringify({"name":"Routes", "children" : list_routes}));
 		});
 	});
 });
+
+// Получение списка внешних соединений
+router.get('/service_externals', auth, function(req, res, next) {
+	debug('/service_externals get: ' + req.query.serv_id + " " + req.query.service_name);
+	var infoArray = [];
+	db.get_service_id(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.service_name, function(service_id){
+		db.get_externals(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, function(list_externals){
+			res.status(200).json(JSON.stringify({"name":"External connections", "children" : list_externals}));
+		});
+	});
+});
+
 
 module.exports = router;
