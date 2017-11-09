@@ -42,7 +42,8 @@ body {
 }
 
 .node text {
-  font: 10px sans-serif;
+  font: 12px sans-serif;
+  text-align: right;
 }
 
 .link {

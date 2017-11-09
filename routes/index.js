@@ -51,8 +51,8 @@ router.post('/login', function(req, res, next) {
 		var userPrincipalName = req.body.login + '@corp.tele2.ru';
 		var passwd = req.body.password;
 
-		// Bind as the user
-		/*var adClient = ldap.createClient({
+		/*// Bind as the user
+		var adClient = ldap.createClient({
 			url: url
 		});
 		adClient.bind(userPrincipalName, passwd, function(err) {
@@ -76,8 +76,8 @@ router.post('/login', function(req, res, next) {
 	        } else {
 	        	req.session.authenticated = true;
 				res.redirect('/');
-	        }});*/
-
+	        }});
+		*/
 		 //dev
 		req.session.authenticated = true;
 		res.redirect('/');
@@ -154,6 +154,17 @@ router.get('/service_artifacts', auth, function(req, res, next) {
 	db.get_service_id(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.service_name, function(service_id){
 		db.get_artifacts(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, function(list_artifacts){
 			res.status(200).json(JSON.stringify({"name":"Artifacts", "children" : list_artifacts}));
+		});
+	});
+});
+
+// Получение списка артифактов для LWSA & SLES
+router.get('/service_routing', auth, function(req, res, next) {
+	debug('/service_routing get: ' + req.query.serv_id + " " + req.query.service_name);
+	var infoArray = [];
+	db.get_service_id(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, req.query.service_name, function(service_id){
+		db.get_routing(config.get('ZoneMap.dbConfig.connectionString'), req.query.serv_id, service_id, function(list_routes){
+			res.status(200).json(JSON.stringify({"name":"Routes", "children" : list_routes}));
 		});
 	});
 });

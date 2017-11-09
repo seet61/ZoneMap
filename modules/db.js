@@ -1,6 +1,8 @@
 var pg = require('pg');
 var debug = require('debug')('zonemap:db');
 
+
+
 function get_versions(connect_string, versions) {
   /* Получение информации для таблицы версий */
   pg.connect(connect_string, function(err, client, done) {
@@ -187,6 +189,115 @@ function get_artifacts(connect_string, serv_id, service_id, list_artifacts) {
   }); 
 }
 
+function get_routing(connect_string, serv_id, service_id, list_routes) {
+  /* Получаем роуты по сервису */
+  var distinct_routes = []; 
+  var routing_array = [];
+
+  pg.connect(connect_string, function(err, client, done) { 
+    if(err) {
+      debug('error fetching client from pool');
+      return console.error('error fetching client from pool', err);
+    }
+    var select_routes = 'select distinct(port_type) as port_type from service_routes where serv_id = $1 and service_id = $2 and end_date>current_date;';
+    var select_services_vars = [serv_id, service_id];
+
+    
+    client.query(select_routes, select_services_vars, function(err, result) { 
+      done();
+
+      if(err) {
+        debug('error running query');
+        return console.error('error running query', err);
+      }
+
+      for (var k=0; k < result.rows.length; k++) {
+        distinct_routes.push(result.rows[k]['port_type'])
+      }
+      //debug('distinct_routes: ' + distinct_routes);
+      for (var i=0; i < distinct_routes.length; i++) { 
+        //debug('distinct_routes: ' + distinct_routes[i]);
+        pg.connect(connect_string, function(err, client1, done1) { 
+          debug('distinct_route: ' + distinct_routes[i]);
+          if(err) {
+            debug('error fetching client from pool');
+            return console.error('error fetching client from pool', err);
+          }
+          var select_routes = 'select * from service_routes where serv_id = $1 and service_id = $2 and end_date>current_date and port_type= $3;';
+          var select_select_route = [serv_id, service_id, distinct_routes[i]];
+
+
+          client1.query(select_routes, select_select_route, function(err, result_route) { 
+            done1();
+
+            if(err) {
+              debug('error running query');
+              return console.error('error running query', err);
+            }
+
+            var rout_children = [];
+            for (var j=0; j < result_route.rows.length; j++) { 
+              rout_children.push({"name" : result_route.rows[j]['condition'], "children" : [{"name" : result_route.rows[j]['rule']}, {"name" : result_route.rows[j]['external_name']}]});
+            }
+            debug('rout_children: ' + rout_children);
+            routing_array.push({"name" : distinct_routes[i], "children" : rout_children}); 
+            debug(distinct_routes[i] + ' routing_array: ' + routing_array);
+          });
+        });
+      }
+    });
+    debug('routing_array: ' + routing_array);
+    list_routes(routing_array);
+  });  
+  
+/*
+
+  
+
+
+      
+      pg.connect(connect_string, function(err, client1, done) { 
+        if(err) {
+          debug('error fetching client from pool');
+          return console.error('error fetching client from pool', err);
+        }
+        var select_routes = 'select distinct(port_type) as port_type from service_routes where serv_id = $1 and service_id = $2 and end_date>current_date;';
+        var select_services_vars = [serv_id, service_id];
+        client1.query(select_routes, select_services_vars, function(err, result1) {
+          done();
+
+          if(err) {
+            debug('error running query');
+            return console.error('error running query', err);
+          }
+
+          for (var i=0; i < result.rows.length; i++) {
+            debug('port_type: ' + result.rows[i]['port_type']);
+            //Получили уникальные port_type теперь выбираем их сгруппированные
+            var select_route = 'select * from service_routes where serv_id = $1 and service_id = $2 and end_date>current_date and port_type= $3;';
+            var select_select_route = [serv_id, service_id, result.rows[i]['port_type']];
+            client.query(select_routes, select_services_vars, function(err, result_route) { 
+              if(err) {
+                debug('error running query');
+                return console.error('error running query', err);
+              }
+
+              //var route_groups = {}; 
+              var rout_children = [];
+              for (var j =0; j < result_route.rows.length; j++) { 
+                rout_children.push({"name" : result_route.rows[j]['condition'], "children" : [{"name" : result_route.rows[j]['rule']}, {"name" : result_route.rows[j]['external_name']}]});
+              }
+              artifacts_array.push({"name" : result.rows[i]['port_type'], "children" : rout_children});
+            });
+          }
+        });
+
+      
+    });
+  });*/
+}
+
+
 //Shutdown connect
 pg.end();
 
@@ -198,5 +309,6 @@ module.exports = {
   get_about : get_about, 
   get_service_id : get_service_id,
   get_aa : get_aa,
-  get_artifacts : get_artifacts
+  get_artifacts : get_artifacts,
+  get_routing : get_routing
 }

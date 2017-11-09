@@ -87,6 +87,17 @@ function onGetDataSuccess(data) {
       error: onError
     });
     }
+    $.ajax({
+      dataType: "json",
+      async: false,
+      url: "/service_routing",
+      data: {
+        serv_id : $('#init_servers option:selected').attr('value'),
+        service_name : infoData["children"][i]["name"]
+      },
+      success: onGeServiceInfo,
+      error: onError
+    });
     
     //console.log('serviceArray: ' + serviceArray);
 
@@ -126,8 +137,8 @@ function get_graph() {
   //console.log("treeData: " + JSON.stringify(treeData));
   // Set the dimensions and margins of the diagram
   var margin = {top: 20, right: 90, bottom: 30, left: 90},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+      width = window.innerWidth - margin.left - margin.right - 100,
+      height = window.innerHeight - margin.top - margin.bottom - 200;
 
   // append the svg object to the body of the page
   // appends a 'group' element to 'svg'
