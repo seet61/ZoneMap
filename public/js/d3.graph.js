@@ -121,7 +121,7 @@ function onGetDataSuccess(data) {
   //Ждем загрузки всей инфы
   var checkExist = setInterval(function() {
     console.log('processing...' + progress + '%');
-    if (parseInt(progress) > 99) {
+    if (Math.round(progress) > 99) {
         clearInterval(checkExist);
         console.log('infoData is done! ' + progress + " " + step);
         treeData = {"name" : $('#init_servers option:selected').text(), "children" : []}
