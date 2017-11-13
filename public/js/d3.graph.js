@@ -3,20 +3,38 @@ var serviceArray = [];
 var progress = 10;
 var step = 10;
 
+function enable_loading() {
+  $('#get_data').attr('disabled', true);
+  $('#progress_bar').attr('hidden', false);
+  $('#bar').attr('style', "width: 1%;");
+  $('#bar').attr('aria-valuenow', "1");
+  $('#bar').text("1%");
+}
+
+function disable_loading() {
+  $('#get_data').attr('disabled', false);
+  $('#progress_bar').attr('hidden', "hidden");
+  $('#bar').attr('style', "width: 0%;");
+  $('#bar').attr('aria-valuenow', "0");
+}
+
+function set_progress() {
+  $('#bar').attr('style', "width: " + progress + "%;");
+  $('#bar').attr('aria-valuenow', progress);
+  $('#bar').text(progress + "%");
+}
+
 function get_data() {
+  progress = 10
   //Ошибка не выбран сервер получения информации
-  if ($('#init_servers option:selected').attr('value') === "" || $('#init_servers option:selected').text() === "Выберите точку отсчета") {
+  if ($('#init_servers option:selected').attr('value') === "" || $('#init_servers option:selected').text() === "Выберите точку отсчета" || $('#init_servers option:selected').text() === undefined) {
     onError('Не выбран сервер!');
     return;
   }
 
-  $('#progress_bar').attr('hidden', false);
-  $('#get_data').button('loading');
-  //console.log('selected server: ' + $('#init_servers option:selected').attr('value') + " host_ip: " + $('#init_servers option:selected').text());
-  $('#bar').attr('style', "width: 1%;");
+  enable_loading();
   $.ajax({
     dataType: "json",
-    async: false,
     url: "/platform_services",
     data: {
       serv_id : $('#init_servers option:selected').attr('value'),
@@ -32,16 +50,15 @@ function onError(error_text) {
   //console.log('Ошибка получения информации!');
   $('#alert_message').text(error_text);
   $('#alert').attr('hidden', false);
-    setTimeout(function() { 
-      $('#alert_message').alert('close');
-      $('#progress_bar').attr('hidden', true);
-      $('#get_data').button('reset');
-    }, 1000);
+  setTimeout(function() { 
+    $('#alert_message').alert('close');
+    disable_loading();
+  }, 1000);
 }
 
 function onGetDataSuccess(data) {
   // Здесь мы получаем данные, отправленные сервером и выводим их на экран.
-  $('#bar').attr('style', "width: " + progress + "%;");
+  set_progress();
   var infoData = JSON.parse(data);
   step = 90/parseInt(infoData["children"].length);
   console.log('infoData step: ' + step);
@@ -120,7 +137,7 @@ function onGetDataSuccess(data) {
     infoArray.push({"name" : infoData["children"][i]["name"], "children" : serviceArray});
     //add progress bar status
     progress += step;
-    $('#bar').attr('style', "width: " + progress + "%;");
+    set_progress();
   }
   //Ждем загрузки всей инфы
   var i = 0;
@@ -136,13 +153,12 @@ function onGetDataSuccess(data) {
         treeData = {"name" : $('#init_servers option:selected').text(), "children" : []}
         treeData["children"] = infoArray;
         setTimeout(function() {
-          $('#progress_bar').attr('hidden', true);
-          $('#get_data').button('reset');
+          disable_loading();
           get_graph();
         }, 500);  
      }
-     i += 50;
-    }, 50); // check every 50ms
+     i += 100;
+    }, 100); // check every 50ms
   
 }
 

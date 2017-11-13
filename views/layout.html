@@ -8,10 +8,10 @@
     <meta name="author" content="dmitry.a.arefyev@tele2.ru">
 
     
-    <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
+    <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet"> 
     <link href="css/custom.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <!-- <link href="css/bootstrap-responsive.css" rel="stylesheet"> -->
     <link href="css/bootstrap-table.css" rel="stylesheet" >
     
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -20,15 +20,11 @@
     <![endif]-->
 
     <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
-                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="ico/favicon.png">
+    <link rel="shortcut icon" href="ico/favicon.ico">
 
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.js"></script>
+    <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-table.js"></script>
     <script src="js/bootstrap-table-ru-RU.js"></script>
@@ -36,25 +32,31 @@
 
   <body>
     {{> menu }}
-    <div id='alert' class="row" hidden=true>
-      <div class="span6 offset7">
-        <div id='alert_message' class="alert alert-error btn-small">
-          <!-- <button type="button" class="close" data-dismiss="alert">x</button> -->
-          <button type="button" class="close" aria-hidden="true" data-dismiss="alert">&times;</button>
-          <strong>Ошибка!</strong> {{ error_text }}
-        </div>
+    <div id='alert' class="container" hidden=true>
+      <div class="row justify-content-center">
+        <div id='alert' class="row">
+          <div id='alert_message' class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>  
       </div>
-    </div>  
+    </div>
+   
     {{#error_block}}
-    <div class="row">
-      <div class="span6 offset7">
-        <div class="alert alert-error btn-small">
-          <!-- <button type="button" class="close" data-dismiss="alert">x</button> -->
-          <button type="button" class="close" aria-hidden="true" data-dismiss="alert">&times;</button>
-          <strong>Ошибка!</strong> {{ error_text }}
-        </div>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div id='alert' class="row">
+          <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Ошибка!</strong> {{ error_text }}
+          </div>
+        </div>  
       </div>
-    </div>  
+    </div>
     {{/error_block}}
 
     <!-- container -->

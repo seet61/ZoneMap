@@ -1,12 +1,10 @@
-<div class="container center-block">
-      <form class="form-signin" action="/login" method="post">
+<div class="container">
+	<form class="form-signin" action="/login" method="post">
         <h2 class="form-signin-heading">Авторизация</h2>
-        <input id="login" name='login'type="text" class="input-block-level" placeholder="Логин">
-        <input id="password" name='password' type="password" class="input-block-level" placeholder="Пароль">
-        <!-- <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label> -->
-        <button class="btn btn-large btn-primary btn-inverse" type="submit">Вход</button>
-      </form>
-</div>  
-  
+        <label for="login" class="sr-only">Логин</label>
+        <input id="login" name="login" type="text" class="form-control" placeholder="Логин" required autofocus>
+        <label for="inputPassword" class="sr-only">Пароль</label>
+        <input id="password" name="password" type="password" class="form-control" placeholder="Пароль" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Вход</button>
+    </form>
+</div> <!-- /container -->

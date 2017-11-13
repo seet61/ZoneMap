@@ -79,8 +79,8 @@ router.post('/login', function(req, res, next) {
 				res.redirect('/');
 	        }});
 		
-		/* //dev
-		req.session.authenticated = true;
+		 //dev
+		/*req.session.authenticated = true;
 		res.redirect('/');*/
 		
 	}

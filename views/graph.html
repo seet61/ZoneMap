@@ -1,4 +1,4 @@
-<div class="row">
+<!-- <div class="row">
 	<div class="container">
 		<div class="span2 offset1">
 			<select id='init_servers'>
@@ -11,9 +11,6 @@
 		<div class="span2 offset1">
 			<button id='get_data' class="btn btn-inverse" type="button" onclick="get_data()" data-loading-text="Загрузка…">Получить данные</button>
 		</div>
-		<!-- <div class="span2">
-			<button class="btn btn-inverse" type="button" onclick="get_graph()">Построить граф</button>
-		</div>	 -->
 	</div>
 </div>
 <div id='progress_bar' class="row" hidden=true>
@@ -23,10 +20,37 @@
 		</div>
 	</div>
 </div>
+	 -->
 
-<div id="graph" class="container">
-	
+<div class="container">
+	<div class="row justify-content-center">
+	  <div class="col-sm-2">
+	  	<select id="init_servers" class="custom-select">
+		  <option value="" selected disabled>Выберите точку отсчета</option>
+		  {{#init_servers}}
+	        <option id={{serv_id}} value={{serv_id}}>{{host_ip}}</option>
+	      {{/init_servers}}
+		</select>
+	  </div>
+	  <div class="col-sm-2">
+	  	<button id='get_data' type="button" class="btn btn-primary" onclick="get_data()">Получить данные</button>
+	  </div>
+	</div>
 </div>
+<div class="container">
+	<div class="row justify-content-center" id='progress_bar' hidden="true">
+		<div class="col-12">
+	      	<div class="progress">
+			  <div id='bar' class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+			</div>
+	    </div>
+	</div>
+</div>
+	
+
+
+
+
 <!-- load the d3.js library --> 
 <script src="js/d3.v4.min.js"></script>
 <script src="js/d3.graph.js"></script>
