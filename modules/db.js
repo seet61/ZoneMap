@@ -1,8 +1,6 @@
 var pg = require('pg');
 var debug = require('debug')('zonemap:db');
 
-
-
 function get_versions(connect_string, versions) {
   /* Получение информации для таблицы версий */
   pg.connect(connect_string, function(err, client, done) {
@@ -10,7 +8,8 @@ function get_versions(connect_string, versions) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    client.query('select host_ip, service_name, service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base from public.init_servers ins, public.server_services sss where ins.serv_id = sss.serv_id and sss.end_date>current_date', function(err, result) {
+    var versions_sql = 'select host_ip, service_name, service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base from public.init_servers ins, public.server_services sss where ins.serv_id = sss.serv_id and sss.end_date>current_date order by 1';
+    client.query(versions_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();
 
