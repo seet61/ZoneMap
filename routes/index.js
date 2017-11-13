@@ -52,7 +52,7 @@ router.post('/login', function(req, res, next) {
 		var userPrincipalName = req.body.login + '@corp.tele2.ru';
 		var passwd = req.body.password;
 
-		/*// Bind as the user
+		// Bind as the user
 		var adClient = ldap.createClient({
 			url: url
 		});
@@ -78,10 +78,10 @@ router.post('/login', function(req, res, next) {
 	        	req.session.authenticated = true;
 				res.redirect('/');
 	        }});
-		*/
-		 //dev
+		
+		/* //dev
 		req.session.authenticated = true;
-		res.redirect('/');
+		res.redirect('/');*/
 		
 	}
 });

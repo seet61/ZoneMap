@@ -6,11 +6,7 @@ var step = 10;
 function get_data() {
   //Ошибка не выбран сервер получения информации
   if ($('#init_servers option:selected').attr('value') === "" || $('#init_servers option:selected').text() === "Выберите точку отсчета") {
-    $('#alert_message').text('Не выбран сервер!');
-    $('#alert').attr('hidden', false);
-    setTimeout(function() { 
-      $('#alert_message').alert('close');
-    }, 1000);
+    onError('Не выбран сервер!');
     return;
   }
 
@@ -20,6 +16,7 @@ function get_data() {
   $('#bar').attr('style', "width: 1%;");
   $.ajax({
     dataType: "json",
+    async: false,
     url: "/platform_services",
     data: {
       serv_id : $('#init_servers option:selected').attr('value'),
@@ -31,8 +28,15 @@ function get_data() {
  
 }
 
-function onError() {
-  console.log('Ошибка получения информации!');
+function onError(error_text) {
+  //console.log('Ошибка получения информации!');
+  $('#alert_message').text(error_text);
+  $('#alert').attr('hidden', false);
+    setTimeout(function() { 
+      $('#alert_message').alert('close');
+      $('#progress_bar').attr('hidden', true);
+      $('#get_data').button('reset');
+    }, 1000);
 }
 
 function onGetDataSuccess(data) {
@@ -119,7 +123,12 @@ function onGetDataSuccess(data) {
     $('#bar').attr('style', "width: " + progress + "%;");
   }
   //Ждем загрузки всей инфы
+  var i = 0;
   var checkExist = setInterval(function() {
+    if (i > 30000) {
+      clearInterval(checkExist);
+      onError('Ошибка получения информации!');
+    }
     console.log('processing...' + progress + '%');
     if (Math.round(progress) > 99) {
         clearInterval(checkExist);
@@ -132,6 +141,7 @@ function onGetDataSuccess(data) {
           get_graph();
         }, 500);  
      }
+     i += 50;
     }, 50); // check every 50ms
   
 }

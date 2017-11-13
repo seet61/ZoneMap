@@ -31,7 +31,9 @@ function get_init_servers(connect_string, init_servers) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    client.query('SELECT serv_id, host_ip FROM public.init_servers', function(err, result) {
+    //var init_sql = 'SELECT serv_id, host_ip FROM public.init_servers';
+    var init_sql = 'select * from init_servers where host_ip not like \'%10.0.%\' order by 2';
+    client.query(init_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();
 
@@ -68,7 +70,7 @@ function get_list_services(connect_string, serv_id, host_ip, list_services) {
       for (var i = 0; i < result.rows.length; i++) {
         children_services.push({"name" : result.rows[i]['service_name']});
       }
-      debug('children_services: ' + children_services[0]["name"]);
+      debug('children_services: ' + children_services);
       var json_string = JSON.stringify({"name" : host_ip, "children" : children_services});
       debug('json_string: ' + json_string);
       list_services(json_string);
@@ -154,6 +156,7 @@ function get_aa(connect_string, serv_id, service_id, list_aa) {
       for (var i=0; i < result.rows.length; i++) {
         system_array.push({"name" : result.rows[i]['system_name']});
       }
+      
       list_aa(system_array);
     });
   }); 
@@ -176,14 +179,15 @@ function get_artifacts(connect_string, serv_id, service_id, list_artifacts) {
         debug('error running query');
         return console.error('error running query', err);
       }
-      var artifacts_array = []; 
+      var artifacts_array = [];
       for (var i=0; i < result.rows.length; i++) {
         artifacts_array.push({"name" : result.rows[i]['artifact_name'], 
           "children" : [
             { "name" : result.rows[i]['artifact_type']},
             { "name" : result.rows[i]['artifact_version']}
-            ]});
-      }
+          ]});
+      }  
+      
       list_artifacts(artifacts_array);
     });
   }); 
@@ -215,6 +219,7 @@ function get_distinct_routs(connect_string, serv_id, service_id, distinct_routs)
       for (var k=0; k < result.rows.length; k++) {
         distinct.push(result.rows[k]['port_type']);
       }
+      
       distinct_routs(distinct);
     });
   });  
@@ -245,8 +250,9 @@ function get_distinct_groups(connect_string, serv_id, service_id, port_type, dis
           "children" : [
             { "name" : result.rows[i]['rule']},
             { "name" : result.rows[i]['external_name']}
-            ]});
-      }
+          ]});
+      }  
+      
       //debug('group_array: ' + group_array);
       distinct_groups(group_array);
     });
@@ -276,8 +282,9 @@ function get_externals(connect_string, serv_id, service_id, list_externals) {
           "children" : [
             { "name" : "data address", "children" : [{"name" : result.rows[i]['data_address']}]},
             { "name" : "service address", "children" : [{"name" : result.rows[i]['service_address']}]}
-            ]});
+          ]});
       }
+      
       list_externals(externals_array);
     });
   }); 
