@@ -31,7 +31,7 @@ function get_init_servers(connect_string, init_servers) {
       return console.error('error fetching client from pool', err);
     }
     //var init_sql = 'SELECT serv_id, host_ip FROM public.init_servers';
-    var init_sql = 'select * from init_servers where host_ip not like \'%10.0.%\' order by 2';
+    var init_sql = 'select * from init_servers where host_ip not like \'%10.0.%\' and host_ip not like \'%10.251.%\' and host_ip not like \'%10.77.%\' order by 2';
     client.query(init_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();

@@ -19,13 +19,14 @@ function disable_loading() {
 }
 
 function set_progress() {
-  $('#bar').attr('style', "width: " + progress + "%;");
-  $('#bar').attr('aria-valuenow', progress);
-  $('#bar').text(progress + "%");
+  $('#bar').attr('style', "width: " + Math.round(progress) + "%;");
+  $('#bar').attr('aria-valuenow', Math.round(progress));
+  $('#bar').text(Math.round(progress) + "%");
 }
 
 function get_data() {
-  progress = 10
+  progress = 10;
+  step = 0;
   //Ошибка не выбран сервер получения информации
   if ($('#init_servers option:selected').attr('value') === "" || $('#init_servers option:selected').text() === "Выберите точку отсчета" || $('#init_servers option:selected').text() === undefined) {
     onError('Не выбран сервер!');
@@ -60,7 +61,7 @@ function onGetDataSuccess(data) {
   // Здесь мы получаем данные, отправленные сервером и выводим их на экран.
   set_progress();
   var infoData = JSON.parse(data);
-  step = 90/parseInt(infoData["children"].length);
+  step = Math.round(90/parseInt(infoData["children"].length));
   console.log('infoData step: ' + step);
   var infoArray = [];
   for (var i = 0; i < infoData["children"].length; i++) {

@@ -10,7 +10,7 @@ var fs = require('fs');
 var FileStreamRotator = require('file-stream-rotator');
 var debug = require('debug')('zonemap:app');
 
-//Rules for routes
+//routes
 var index = require('./routes/index');
 //var users = require('./routes/users');
 
@@ -57,7 +57,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
-//routes
+//Rules for routes
 app.use('/', index);
 //app.use('/users', users);
 
@@ -76,11 +76,6 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  /*res.render('error.html', {
-    message: err.message,
-    status: err.status,
-    error: err
-  });*/
 
   var view = {
     "template_error": true,
