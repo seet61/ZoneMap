@@ -94,8 +94,8 @@ router.get('/logout', function(req, res) {
 });
 
 // GET page with table of version platform
-router.get('/table_version_platform', auth, function(req, res, next) {
-	debug('/table_version_platform get' );
+router.get('/table_versions', auth, function(req, res, next) {
+	debug('/table_versions get' );
 	debug('db connect_string: ' + config.get('ZoneMap.dbConfig.connectionString'));
 	db.get_versions(config.get('ZoneMap.dbConfig.connectionString'), function(versions){
 		//var versions_string = typeof versions === 'string';

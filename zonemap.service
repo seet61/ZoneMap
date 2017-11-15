@@ -1,4 +1,5 @@
 [Unit]
+#https://www.axllent.org/docs/view/nodejs-service-with-systemd/
 Description=ZoneMap
 #Requires=After=mysql.service       # Requires the mysql service to run first
 
@@ -12,7 +13,7 @@ RestartSec=10
 # Output to syslog
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=nodejs-example
+SyslogIdentifier=nodejs-zonemap
 #User=<alternate user>
 #Group=<alternate group>
 Environment=NODE_ENV=config
