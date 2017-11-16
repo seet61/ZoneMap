@@ -159,18 +159,6 @@ router.get('/service_artifacts', auth, function(req, res, next) {
 	});
 });
 
-function set_distinct_groups(distinct_groups) {
-	distinct = distinct_groups;
-	//debug("get_distinct_groups: " + JSON.stringify(distinct));
-}
-
-function clear_distinct() {
-	distinct = [];
-}
-
-function get_distinct_groups() {
-	return distinct;
-}
 
 // Получение списка роутов
 router.get('/service_routing', auth, function(req, res, next) {
