@@ -1,0 +1,28 @@
+<div class="table-responsive">
+  <table class="table table-striped table-bordered"
+    data-toggle="table"
+    data-search="true">
+    <thead class="thead-light">
+      <tr>
+        <th data-sortable="true">tns sid</th>
+        <th data-sortable="true">tns name</th>
+        <th data-sortable="true">version custom</th>
+        <th data-sortable="true">version invoice</th>
+        <th data-sortable="true">instance name</th>
+        <th data-sortable="true">host name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#db_about}}
+        <tr>
+          <td>{{tns_sid}}</td>
+          <td>{{tns_name}}</td>
+          <td>{{version_custom}}</td>
+          <td>{{version_invoice}}</td>
+          <td>{{instance_name}}</td>
+          <td>{{host_name}}</td>
+        </tr>
+      {{/db_about}}
+    </tbody>
+  </table>
+</div>

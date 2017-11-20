@@ -24,6 +24,28 @@ function get_versions(connect_string, versions) {
   });
 }
 
+function get_db_about(connect_string, db_about) {
+  /* Получение информации для таблицы о версиях в БД */
+  pg.connect(connect_string, function(err, client, done) {
+    if(err) {
+      debug('error fetching client from pool');
+      return console.error('error fetching client from pool', err);
+    }
+    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, instance_name, host_name fROM public.databases_info where end_date > current_date;';
+    client.query(db_about_sql, function(err, result) {
+      //call `done()` to release the client back to the pool
+      done();
+
+      if(err) {
+        debug('error running query');
+        return console.error('error running query', err);
+      }
+      //console.log(result.rows);
+      db_about(result.rows);
+    });
+  });
+}
+
 function get_init_servers(connect_string, init_servers) {
   /* Получение списка серверов для выбора в выподающем списке карты */
   pg.connect(connect_string, function(err, client, done) {
@@ -297,6 +319,7 @@ pg.end();
 //https://stackoverflow.com/questions/33589571/module-exports-that-include-all-functions-in-a-single-line
 module.exports = {
   get_versions : get_versions,
+  get_db_about : get_db_about,
   get_init_servers : get_init_servers,
   get_list_services : get_list_services, 
   get_about : get_about, 

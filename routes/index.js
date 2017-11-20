@@ -108,6 +108,22 @@ router.get('/table_versions', auth, function(req, res, next) {
     });
 });
 
+// GET page with table of version db about
+router.get('/table_db_about', auth, function(req, res, next) {
+	debug('/table_db_about get' );
+	debug('db connect_string: ' + config.get('ZoneMap.dbConfig.connectionString'));
+	db.get_db_about(config.get('ZoneMap.dbConfig.connectionString'), function(db_about){
+		//var versions_string = typeof versions === 'string';
+      	debug('db_about: ' + db_about);
+      	var view = {
+        	"template_table_db_about": true,
+        	"db_about": db_about
+      	};
+      	res.render('layout.html', view);
+    });
+});
+
+
 // GET graph page
 router.get('/graph', auth, function(req, res, next) {
 	debug('/graph get: ' + req.session);
