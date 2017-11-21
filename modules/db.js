@@ -31,7 +31,7 @@ function get_db_about(connect_string, db_about) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, instance_name, host_name fROM public.databases_info where end_date > current_date;';
+    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, instance_name, host_name fROM public.databases_info where end_date > current_date;';
     client.query(db_about_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();

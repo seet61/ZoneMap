@@ -19,6 +19,9 @@ function disable_loading() {
 }
 
 function set_progress() {
+  if (progress > 100) {
+    progress = 100;
+  }
   $('#bar').attr('style', "width: " + Math.round(progress) + "%;");
   $('#bar').attr('aria-valuenow', Math.round(progress));
   $('#bar').text(Math.round(progress) + "%");
