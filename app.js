@@ -9,6 +9,7 @@ var mustacheExpress = require('mustache-express');
 var fs = require('fs');
 var FileStreamRotator = require('file-stream-rotator');
 var debug = require('debug')('zonemap:app');
+var config  = require('config');
 
 //routes
 var index = require('./routes/index');
@@ -54,7 +55,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: '2C44-4D44-WppQ38S',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { 
+      maxAge: config.get('ZoneMap.session.timeout')
+    }
 }));
 
 //Rules for routes

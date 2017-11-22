@@ -6,6 +6,9 @@
 		},
 		"dbConfig": {
 			"connectionString": "pg://testZone:testZone@10.78.221.58:5432/testZoneDB"
+		},
+		"session": {
+			"timeout": 1800000
 		}
 	}
 }

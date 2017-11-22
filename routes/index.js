@@ -9,9 +9,10 @@ var distinct = [];
 
 // Authentication and Authorization Middleware
 var auth = function(req, res, next) {
-	if (req.session.authenticated === true)
+	if (req.session.authenticated === true) {
+		debug('req: ' + JSON.stringify(req.session));
 		return next();
-	else
+	} else
 		res.redirect('/login');
 };
 
