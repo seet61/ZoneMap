@@ -2,7 +2,6 @@
 	"debug" : true,
 	"ZoneMap": {
 		"siteConfig": {
-			"host": "10.78.251.72",
 			"port": "3000"
 		},
 		"dbConfig": {
