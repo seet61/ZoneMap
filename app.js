@@ -10,6 +10,7 @@ var fs = require('fs');
 var FileStreamRotator = require('file-stream-rotator');
 var debug = require('debug')('zonemap:app');
 var config  = require('config');
+var pgSession = require('connect-pg-simple')(session)
 
 //routes
 var index = require('./routes/index');
@@ -54,12 +55,23 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: '2C44-4D44-WppQ38S',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
+    unset: 'destroy',
     cookie: { 
       maxAge: config.get('ZoneMap.session.timeout')
-    }
+    },
+    store: new pgSession({
+      conString : config.get('ZoneMap.dbConfig.connectionString'),              
+      tableName : 'user_sessions',   // Use another table-name than the default "session" one 
+      ttl: config.get('ZoneMap.session.timeout'),
+      pruneSessionInterval: 300,
+      errorLog: debug()
+    })
 }));
+
+//Set TimeZone
+app.set('TZ', 'MSK');
 
 //Rules for routes
 app.use('/', index);

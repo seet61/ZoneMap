@@ -9,11 +9,12 @@ var distinct = [];
 
 // Authentication and Authorization Middleware
 var auth = function(req, res, next) {
+    debug('req: ' + req.session.id + " " + JSON.stringify(req.session) + " " + req.session.authenticated);
 	if (req.session.authenticated === true) {
-		debug('req: ' + JSON.stringify(req.session));
 		return next();
-	} else
+	} else {
 		res.redirect('/login');
+	}
 };
 
 // GET home page
@@ -75,9 +76,15 @@ router.post('/login', function(req, res, next) {
 					};
 					res.render('layout.html', view);
 	            }
-	        } else {
-	        	req.session.authenticated = true;
-				res.redirect('/');
+	        } else {	        	
+		        req.session.authenticated = true;
+		        debug('authenticated! '  + req.session.id + " " + JSON.stringify(req.session));
+		        req.session.save( function(err) {
+				    req.session.reload( function (err) {
+				         res.redirect(req.session.cookie.path);
+				    });
+				});
+		        
 	        }});
 		
 		 //dev
@@ -90,6 +97,7 @@ router.post('/login', function(req, res, next) {
 // Logout endpoint
 router.get('/logout', function(req, res) {
 	debug('/logout');
+	req.session.authenticated = false;
 	req.session.destroy();
 	res.redirect('/login');
 });
