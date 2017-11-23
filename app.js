@@ -64,7 +64,7 @@ app.use(session({
     store: new pgSession({
       conString : config.get('ZoneMap.dbConfig.connectionString'),              
       tableName : 'user_sessions',   // Use another table-name than the default "session" one 
-      ttl: config.get('ZoneMap.session.timeout'),
+      ttl: config.get('ZoneMap.session.timeout')/1000,
       pruneSessionInterval: 300,
       errorLog: debug()
     })
