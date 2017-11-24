@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "dev": "nodemon node ./bin/www",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -21,5 +22,8 @@
     "mustache-express": "^1.2.5",
     "pg": "^6.4.2",
     "serve-favicon": "~2.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
   }
 }

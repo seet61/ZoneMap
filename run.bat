@@ -1,4 +1,5 @@
 set NODE_ENV=config
 set DEBUG=zonemap:* 
 rem set DEBUG=*:* 
-npm start
+rem npm start
+npm run dev

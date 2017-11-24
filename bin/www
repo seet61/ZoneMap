@@ -6,7 +6,9 @@
 
 var app = require('../app');
 var debug = require('debug')('zonemap:server');
+var fs = require('fs');
 var http = require('http');
+var https = require('https');
 var config  = require('config');
 
 
@@ -22,6 +24,17 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * Create HTTPS server.
+ */
+/*
+var options = {
+    key: fs.readFileSync('./ssl/server.key'),
+    cert: fs.readFileSync('./ssl/server.crt'),
+};
+
+var server = https.createServer(options, app);*/
 
 /**
  * Listen on provided port, on all network interfaces.
