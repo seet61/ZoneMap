@@ -19,7 +19,7 @@ var auth = function(req, res, next) {
 
 // GET home page
 router.get('/', auth, function(req, res, next) {
-	debug('/ get: ' + req.session);
+	debug('/ get: ' + req.session.id);
 	var view = {
 		"template_index": true,
 	};
@@ -37,6 +37,7 @@ router.get('/login', function(req, res, next) {
 
 //Post login
 router.post('/login', function(req, res, next) {
+	debug("req.body: " + JSON.stringify(req.body));
 	if (!req.body.login || !req.body.password) {
 		//Отпарвить ошибку ввода логина пароля
 		debug('/login get');
@@ -104,9 +105,8 @@ router.get('/logout', function(req, res) {
 
 // GET page with table of version platform
 router.get('/table_versions', auth, function(req, res, next) {
-	debug('/table_versions get' );
-	debug('db connect_string: ' + config.get('ZoneMap.dbConfig.connectionString'));
-	db.get_versions(config.get('ZoneMap.dbConfig.connectionString'), function(versions){
+	debug('/table_versions get: ' + JSON.stringify(req.params));
+    db.get_versions(config.get('ZoneMap.dbConfig.connectionString'), function(versions){
 		//var versions_string = typeof versions === 'string';
       	debug('versions: ' + versions);
       	var view = {
@@ -114,6 +114,20 @@ router.get('/table_versions', auth, function(req, res, next) {
         	"versions": versions
       	};
       	res.render('layout.html', view);
+    });
+});
+
+router.get('/get_service_history', auth, function(req, res, next) {
+	debug('/get_service_history get: ' + JSON.stringify(req.query));
+	db.get_service_history(config.get('ZoneMap.dbConfig.connectionString'), req.query.host_ip, req.query.service_name, function(history){
+		//var versions_string = typeof versions === 'string';
+      	debug('history: ' + history);
+      	res.status(200).json(JSON.stringify({"history":history}));
+      	/*var view = {
+        	"template_table_version_platform": true,
+        	"versions": versions
+      	};
+      	res.render('layout.html', view);*/
     });
 });
 

@@ -59,7 +59,8 @@ app.use(session({
     saveUninitialized: true,
     unset: 'destroy',
     cookie: { 
-      maxAge: config.get('ZoneMap.session.timeout')
+      maxAge: config.get('ZoneMap.session.timeout'),
+      httpOnly: false
     },
     store: new pgSession({
       conString : config.get('ZoneMap.dbConfig.connectionString'),              

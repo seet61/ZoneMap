@@ -9,7 +9,10 @@ function get_versions(connect_string, versions) {
       return console.error('error fetching client from pool', err);
     }
     var versions_sql = 'select host_ip, service_name, service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base ' + 
-                      'from init_servers ins, public.server_services sss where ins.serv_id = sss.serv_id and sss.end_date>current_date order by 1,2';
+                         'from init_servers ins, server_services sss ' +
+                        'where ins.serv_id = sss.serv_id ' + 
+                          'and sss.end_date>current_date ' + 
+                        'order by 1,2';
     client.query(versions_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();
@@ -22,6 +25,36 @@ function get_versions(connect_string, versions) {
       versions(result.rows);
     });
   });
+  pg.end();
+}
+
+function get_service_history(connect_string, host_ip, service_name, history) {
+  /* Получение информации для таблицы версий */
+  pg.connect(connect_string, function(err, client, done) {
+    if(err) {
+      debug('error fetching client from pool');
+      return console.error('error fetching client from pool', err);
+    }
+    var history_sql = 'select service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base, to_char(start_date, \'DD.MM.YYYY\') as start_date, to_char(end_date, \'DD.MM.YYYY\') as end_date ' +
+                         'from init_servers ins, server_services sss ' +
+                        'where ins.serv_id = sss.serv_id ' + 
+                          'and ins.host_ip = $1 ' +
+                          'and sss.service_name = $2 ' +
+                        'order by start_date'
+    var history_sql_vars = [host_ip, service_name];
+    client.query(history_sql, history_sql_vars, function(err, result) {
+      //call `done()` to release the client back to the pool
+      done();
+
+      if(err) {
+        debug('error running query');
+        return console.error('error running query', err);
+      }
+      debug(result.rows[0]["start_date"]);
+      history(result.rows);
+    });
+  });
+  pg.end();
 }
 
 function get_db_about(connect_string, db_about) {
@@ -31,7 +64,7 @@ function get_db_about(connect_string, db_about) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, instance_name, host_name fROM public.databases_info where end_date > current_date;';
+    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, instance_name, host_name fROM databases_info where end_date > current_date;';
     client.query(db_about_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();
@@ -44,6 +77,7 @@ function get_db_about(connect_string, db_about) {
       db_about(result.rows);
     });
   });
+  pg.end();
 }
 
 function get_init_servers(connect_string, init_servers) {
@@ -53,7 +87,7 @@ function get_init_servers(connect_string, init_servers) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    //var init_sql = 'SELECT serv_id, host_ip FROM public.init_servers';
+    //var init_sql = 'SELECT serv_id, host_ip FROM init_servers';
     var init_sql = 'select * from init_servers where host_ip not like \'%10.0.%\' and host_ip not like \'%10.251.%\' and host_ip not like \'%10.77.%\' order by 2';
     client.query(init_sql, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -67,6 +101,7 @@ function get_init_servers(connect_string, init_servers) {
       init_servers(result.rows);
     });
   }); 
+  pg.end();
 }
 
 function get_list_services(connect_string, serv_id, host_ip, list_services) {
@@ -99,6 +134,7 @@ function get_list_services(connect_string, serv_id, host_ip, list_services) {
       //list_services={};
     });
   }); 
+  pg.end();
 }
 
 function get_about(connect_string, serv_id, service_name, about_service) {
@@ -130,7 +166,8 @@ function get_about(connect_string, serv_id, service_name, about_service) {
       debug('about_array: ' + about_array);
       about_service(about_array);
     });
-  }); 
+  });
+  pg.end(); 
 }
 
 function get_service_id(connect_string, serv_id, service_name, service_id) {
@@ -154,6 +191,7 @@ function get_service_id(connect_string, serv_id, service_name, service_id) {
       service_id(result.rows[0]['service_id']);
     });
   }); 
+  pg.end();
 }
 
 
@@ -182,6 +220,7 @@ function get_aa(connect_string, serv_id, service_id, list_aa) {
       list_aa(system_array);
     });
   }); 
+  pg.end();
 }
 
 function get_artifacts(connect_string, serv_id, service_id, list_artifacts) {
@@ -213,6 +252,7 @@ function get_artifacts(connect_string, serv_id, service_id, list_artifacts) {
       list_artifacts(artifacts_array);
     });
   }); 
+  pg.end();
 }
 
 function get_distinct_routs(connect_string, serv_id, service_id, distinct_routs) {
@@ -244,7 +284,8 @@ function get_distinct_routs(connect_string, serv_id, service_id, distinct_routs)
       
       distinct_routs(distinct);
     });
-  });  
+  });
+  pg.end();  
 }
 
 
@@ -278,7 +319,8 @@ function get_distinct_groups(connect_string, serv_id, service_id, port_type, dis
       //debug('group_array: ' + group_array);
       distinct_groups(group_array);
     });
-  }); 
+  });
+  pg.end(); 
 }
 
 function get_externals(connect_string, serv_id, service_id, list_externals) {
@@ -310,6 +352,7 @@ function get_externals(connect_string, serv_id, service_id, list_externals) {
       list_externals(externals_array);
     });
   }); 
+  pg.end();
 }
 
 
@@ -319,6 +362,7 @@ pg.end();
 //https://stackoverflow.com/questions/33589571/module-exports-that-include-all-functions-in-a-single-line
 module.exports = {
   get_versions : get_versions,
+  get_service_history : get_service_history,
   get_db_about : get_db_about,
   get_init_servers : get_init_servers,
   get_list_services : get_list_services, 

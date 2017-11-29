@@ -34,7 +34,8 @@ var options = {
     cert: fs.readFileSync('./ssl/server.crt'),
 };
 
-var server = https.createServer(options, app);*/
+var server = https.createServer(options, app);
+*/
 
 /**
  * Listen on provided port, on all network interfaces.
