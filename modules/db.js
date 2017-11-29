@@ -35,7 +35,7 @@ function get_service_history(connect_string, host_ip, service_name, history) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var history_sql = 'select service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base, to_char(start_date, \'DD.MM.YYYY\') as start_date, to_char(end_date, \'DD.MM.YYYY\') as end_date ' +
+    var history_sql = 'select service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base, to_char(start_date, \'DD-MM-YYYY HH24:MI:SS\') as start_date, to_char(end_date, \'DD-MM-YYYY HH24:MI:SS\') as end_date ' +
                          'from init_servers ins, server_services sss ' +
                         'where ins.serv_id = sss.serv_id ' + 
                           'and ins.host_ip = $1 ' +

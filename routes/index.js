@@ -123,11 +123,6 @@ router.get('/get_service_history', auth, function(req, res, next) {
 		//var versions_string = typeof versions === 'string';
       	debug('history: ' + history);
       	res.status(200).json(JSON.stringify({"history":history}));
-      	/*var view = {
-        	"template_table_version_platform": true,
-        	"versions": versions
-      	};
-      	res.render('layout.html', view);*/
     });
 });
 
