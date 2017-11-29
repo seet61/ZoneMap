@@ -11,7 +11,7 @@ function get_versions(connect_string, versions) {
     var versions_sql = 'select host_ip, service_name, service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base ' + 
                          'from init_servers ins, server_services sss ' +
                         'where ins.serv_id = sss.serv_id ' + 
-                          'and sss.end_date>current_date ' + 
+                          'and sss.end_date>clock_timestamp() ' + 
                         'order by 1,2';
     client.query(versions_sql, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -64,7 +64,8 @@ function get_db_about(connect_string, db_about) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, instance_name, host_name fROM databases_info where end_date > current_date;';
+    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, version_invoice_api, version_invoice_date_api, instance_name, host_name ' +
+                      'from databases_info where end_date > clock_timestamp() order by tns_sid;';
     client.query(db_about_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();
@@ -111,7 +112,7 @@ function get_list_services(connect_string, serv_id, host_ip, list_services) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_services = 'SELECT * FROM server_services where serv_id = $1 and end_date>current_date;';
+    var select_services = 'SELECT * FROM server_services where serv_id = $1 and end_date>clock_timestamp();';
     var select_services_vars = [serv_id];
     client.query(select_services, select_services_vars, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -144,7 +145,7 @@ function get_about(connect_string, serv_id, service_name, about_service) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_services = 'SELECT * FROM server_services where serv_id = $1 and service_name = $2 and end_date>current_date;';
+    var select_services = 'SELECT * FROM server_services where serv_id = $1 and service_name = $2 and end_date>clock_timestamp();';
     var select_services_vars = [serv_id, service_name];
     client.query(select_services, select_services_vars, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -177,7 +178,7 @@ function get_service_id(connect_string, serv_id, service_name, service_id) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_services = 'SELECT service_id FROM server_services where serv_id = $1 and service_name = $2 and end_date>current_date;';
+    var select_services = 'SELECT service_id FROM server_services where serv_id = $1 and service_name = $2 and end_date>clock_timestamp();';
     var select_services_vars = [serv_id, service_name];
     client.query(select_services, select_services_vars, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -202,7 +203,7 @@ function get_aa(connect_string, serv_id, service_id, list_aa) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_aa = 'SELECT * FROM sg_aa where serv_id = $1 and service_id = $2 and end_date>current_date;';
+    var select_aa = 'SELECT * FROM sg_aa where serv_id = $1 and service_id = $2 and end_date>clock_timestamp();';
     var select_services_vars = [serv_id, service_id];
     client.query(select_aa, select_services_vars, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -230,7 +231,7 @@ function get_artifacts(connect_string, serv_id, service_id, list_artifacts) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_artifacts = 'SELECT * FROM service_artifacts where serv_id = $1 and service_id = $2 and end_date>current_date;';
+    var select_artifacts = 'SELECT * FROM service_artifacts where serv_id = $1 and service_id = $2 and end_date>clock_timestamp();';
     var select_services_vars = [serv_id, service_id];
     client.query(select_artifacts, select_services_vars, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -265,7 +266,7 @@ function get_distinct_routs(connect_string, serv_id, service_id, distinct_routs)
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_routes = 'select distinct(port_type) as port_type from service_routes where serv_id = $1 and service_id = $2 and end_date>current_date;';
+    var select_routes = 'select distinct(port_type) as port_type from service_routes where serv_id = $1 and service_id = $2 and end_date>clock_timestamp();';
     var select_services_vars = [serv_id, service_id];
 
     
@@ -297,7 +298,7 @@ function get_distinct_groups(connect_string, serv_id, service_id, port_type, dis
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_group = 'select * from service_routes where serv_id = $1 and service_id = $2 and end_date>current_date and port_type= $3;';
+    var select_group = 'select * from service_routes where serv_id = $1 and service_id = $2 and end_date>clock_timestamp() and port_type= $3;';
     var select_group_vars = [serv_id, service_id, port_type];
     client.query(select_group, select_group_vars, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -330,7 +331,7 @@ function get_externals(connect_string, serv_id, service_id, list_externals) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var select_externals = 'select distinct(external_name), data_address, service_address from external_connections where serv_id = $1 and service_id = $2 and end_date>current_date;';
+    var select_externals = 'select distinct(external_name), data_address, service_address from external_connections where serv_id = $1 and service_id = $2 and end_date>clock_timestamp();';
     var select_externals_vars = [serv_id, service_id];
     client.query(select_externals, select_externals_vars, function(err, result) {
       //call `done()` to release the client back to the pool
