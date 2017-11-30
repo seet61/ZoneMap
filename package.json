@@ -1,7 +1,10 @@
 {
   "name": "zonemap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
+  "description": "Сервис отображения информации о тестовой зоне.",
+  "homepage": "http://zonemap.corp.tele2.ru",
+  "license" : "Tele2",
   "scripts": {
     "dev": "nodemon ./bin/www",
     "start": "node ./bin/www"

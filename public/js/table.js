@@ -44,7 +44,7 @@ function get_service_history(host, service) {
 }
 
 function onError(error_text) {
-  //console.log('Ошибка получения информации!');
+  ////console.log('Ошибка получения информации!');
   $('#alert_message').text(error_text);
   $('#alert').attr('hidden', false);
   setTimeout(function() { 
@@ -58,7 +58,7 @@ function onGetDataSuccess(data) {
   // Здесь мы получаем данные, отправленные сервером и выводим их на экран.
   set_progress();
   var infoData = JSON.parse(data);
-  console.log('infoData: ' + infoData["history"]);
+  //console.log('infoData: ' + infoData["history"]);
   $table.bootstrapTable('load', infoData["history"]);
   disable_loading();
 }
@@ -69,7 +69,7 @@ $('#get_history_modal').on('show.bs.modal', function (event) {
   var recipient = tr.data('whatever') // Extract info from data-* attributes
   var host = recipient.split(';')[0];
   var service = recipient.split(';')[1];
-  //console.log(recipient.split(';'));
+  ////console.log(recipient.split(';'));
   var modal = $(this);
   modal.find('.modal-title').text(host + " " + service);
   
@@ -102,7 +102,7 @@ $('#get_history_about').on('show.bs.modal', function (event) {
   var recipient = tr.data('whatever') // Extract info from data-* attributes
   var tns_sid = recipient.split(';')[0];
   var tns_name = recipient.split(';')[1];
-  //console.log(recipient.split(';'));
+  ////console.log(recipient.split(';'));
   var modal = $(this);
   modal.find('.modal-title').text(tns_sid);
   
