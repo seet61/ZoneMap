@@ -107,7 +107,6 @@ router.get('/logout', function(req, res) {
 router.get('/table_versions', auth, function(req, res, next) {
 	debug('/table_versions get: ' + JSON.stringify(req.params));
     db.get_versions(config.get('ZoneMap.dbConfig.connectionString'), function(versions){
-		//var versions_string = typeof versions === 'string';
       	debug('versions: ' + versions);
       	var view = {
         	"template_table_version_platform": true,
@@ -120,7 +119,6 @@ router.get('/table_versions', auth, function(req, res, next) {
 router.get('/get_service_history', auth, function(req, res, next) {
 	debug('/get_service_history get: ' + JSON.stringify(req.query));
 	db.get_service_history(config.get('ZoneMap.dbConfig.connectionString'), req.query.host_ip, req.query.service_name, function(history){
-		//var versions_string = typeof versions === 'string';
       	debug('history: ' + history);
       	res.status(200).json(JSON.stringify({"history":history}));
     });
@@ -131,7 +129,6 @@ router.get('/table_db_about', auth, function(req, res, next) {
 	debug('/table_db_about get' );
 	debug('db connect_string: ' + config.get('ZoneMap.dbConfig.connectionString'));
 	db.get_db_about(config.get('ZoneMap.dbConfig.connectionString'), function(db_about){
-		//var versions_string = typeof versions === 'string';
       	debug('db_about: ' + db_about);
       	var view = {
         	"template_table_db_about": true,
@@ -141,6 +138,13 @@ router.get('/table_db_about', auth, function(req, res, next) {
     });
 });
 
+router.get('/get_database_history', auth, function(req, res, next) {
+	debug('/get_database_history get: ' + JSON.stringify(req.query));
+	db.get_database_history(config.get('ZoneMap.dbConfig.connectionString'), req.query.tns_sid, req.query.tns_name, function(history){
+      	debug('history: ' + history);
+      	res.status(200).json(JSON.stringify({"history":history}));
+    });
+});
 
 // GET graph page
 router.get('/graph', auth, function(req, res, next) {

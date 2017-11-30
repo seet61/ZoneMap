@@ -65,7 +65,9 @@ function get_db_about(connect_string, db_about) {
       return console.error('error fetching client from pool', err);
     }
     var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, version_invoice_api, version_invoice_date_api, instance_name, host_name ' +
-                      'from databases_info where end_date > clock_timestamp() order by tns_sid;';
+                         'from databases_info ' + 
+                        'where end_date > clock_timestamp() ' + 
+                        'order by tns_sid;';
     client.query(db_about_sql, function(err, result) {
       //call `done()` to release the client back to the pool
       done();
@@ -76,6 +78,34 @@ function get_db_about(connect_string, db_about) {
       }
       //console.log(result.rows);
       db_about(result.rows);
+    });
+  });
+  pg.end();
+}
+
+function get_database_history(connect_string, tns_sid, tns_name, history) {
+  /* Получение информации для таблицы версий */
+  pg.connect(connect_string, function(err, client, done) {
+    if(err) {
+      debug('error fetching client from pool');
+      return console.error('error fetching client from pool', err);
+    }
+    var history_sql = 'SELECT version_custom, version_invoice, version_invoice_date, version_invoice_api, version_invoice_date_api, instance_name, host_name, to_char(start_date, \'DD-MM-YYYY HH24:MI:SS\') as start_date, to_char(end_date, \'DD-MM-YYYY HH24:MI:SS\') as end_date ' +
+                        'from databases_info ' + 
+                       'where tns_sid = $1 ' +
+                         'and tns_name = $2 ' +
+                       'order by start_date;'
+    var history_sql_vars = [tns_sid, tns_name];
+    client.query(history_sql, history_sql_vars, function(err, result) {
+      //call `done()` to release the client back to the pool
+      done();
+
+      if(err) {
+        debug('error running query');
+        return console.error('error running query', err);
+      }
+      debug(result.rows[0]["start_date"]);
+      history(result.rows);
     });
   });
   pg.end();
@@ -362,16 +392,17 @@ pg.end();
 
 //https://stackoverflow.com/questions/33589571/module-exports-that-include-all-functions-in-a-single-line
 module.exports = {
-  get_versions : get_versions,
-  get_service_history : get_service_history,
-  get_db_about : get_db_about,
-  get_init_servers : get_init_servers,
-  get_list_services : get_list_services, 
-  get_about : get_about, 
-  get_service_id : get_service_id,
-  get_aa : get_aa,
-  get_artifacts : get_artifacts,
-  get_distinct_routs : get_distinct_routs,
-  get_distinct_groups : get_distinct_groups,
-  get_externals : get_externals
+  get_versions          : get_versions,
+  get_service_history   : get_service_history,
+  get_db_about          : get_db_about,
+  get_database_history  : get_database_history, 
+  get_init_servers      : get_init_servers,
+  get_list_services     : get_list_services, 
+  get_about             : get_about, 
+  get_service_id        : get_service_id,
+  get_aa                : get_aa,
+  get_artifacts         : get_artifacts,
+  get_distinct_routs    : get_distinct_routs,
+  get_distinct_groups   : get_distinct_groups,
+  get_externals         : get_externals
 }

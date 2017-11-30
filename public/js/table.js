@@ -63,7 +63,7 @@ function onGetDataSuccess(data) {
   disable_loading();
 }
 
-//Обработка нажатия строки
+//Обработка нажатия строки на таблице V3
 $('#get_history_modal').on('show.bs.modal', function (event) {
   var tr = $(event.relatedTarget) // Button that triggered the modal
   var recipient = tr.data('whatever') // Extract info from data-* attributes
@@ -76,4 +76,37 @@ $('#get_history_modal').on('show.bs.modal', function (event) {
   $table.bootstrapTable('removeAll');
   //Загрузка информации в виде таблицы
   get_service_history(host, service)
+})
+
+function get_database_history(tns_sid, tns_name) {
+  progress = 10;
+  step = 0;
+
+  enable_loading();
+  $.ajax({
+    dataType: "json",
+    url: "/get_database_history",
+    data: {
+      tns_sid: tns_sid,
+      tns_name: tns_name
+    },
+    success: onGetDataSuccess,
+    error: onError
+  });
+ 
+}
+
+//Обработка нажатия строки на таблице V3
+$('#get_history_about').on('show.bs.modal', function (event) {
+  var tr = $(event.relatedTarget) // Button that triggered the modal
+  var recipient = tr.data('whatever') // Extract info from data-* attributes
+  var tns_sid = recipient.split(';')[0];
+  var tns_name = recipient.split(';')[1];
+  //console.log(recipient.split(';'));
+  var modal = $(this);
+  modal.find('.modal-title').text(tns_sid);
+  
+  $table.bootstrapTable('removeAll');
+  //Загрузка информации в виде таблицы
+  get_database_history(tns_sid, tns_name)
 })
