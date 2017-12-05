@@ -64,9 +64,8 @@ function get_db_about(connect_string, db_about) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, version_invoice_api, version_invoice_date_api, instance_name, host_name ' +
-                         'from databases_info ' + 
-                        'where end_date > clock_timestamp() ' + 
+    var db_about_sql = 'SELECT tns_sid, tns_name, version_custom, version_invoice, version_invoice_date, version_invoice_api, version_invoice_date_api, version_inv_tar_scp, install_date_tar_scp, ' +
+                        'instance_name, host_name from databases_info where end_date > clock_timestamp() ' + 
                         'order by tns_sid;';
     client.query(db_about_sql, function(err, result) {
       //call `done()` to release the client back to the pool
@@ -90,7 +89,8 @@ function get_database_history(connect_string, tns_sid, tns_name, history) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var history_sql = 'SELECT version_custom, version_invoice, version_invoice_date, version_invoice_api, version_invoice_date_api, instance_name, host_name, to_char(start_date, \'DD-MM-YYYY HH24:MI:SS\') as start_date, to_char(end_date, \'DD-MM-YYYY HH24:MI:SS\') as end_date ' +
+    var history_sql = 'SELECT version_custom, version_invoice, version_invoice_date, version_invoice_api, version_invoice_date_api, version_inv_tar_scp, install_date_tar_scp, instance_name, ' +
+                      'host_name, to_char(start_date, \'DD-MM-YYYY HH24:MI:SS\') as start_date, to_char(end_date, \'DD-MM-YYYY HH24:MI:SS\') as end_date ' +
                         'from databases_info ' + 
                        'where tns_sid = $1 ' +
                          'and tns_name = $2 ' +
