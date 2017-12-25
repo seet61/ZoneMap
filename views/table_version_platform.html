@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       {{#versions}}
-        <tr data-toggle="modal" data-target="#get_history_modal" data-whatever="{{host_ip}};{{service_name}}" >
+        <tr data-toggle="modal" data-target="#get_history_modal" data-whatever="{{host_ip}};{{service_name}};{{data_port}};{{http_port}};{{service_port}}" >
           <td>{{host_ip}}</td>
           <td>{{service_name}}</td>
           <td>{{service_type}}</td>
@@ -60,6 +60,7 @@
           data-toggle="table">
           <thead class="thead-light">
             <tr>
+              <th data-field="service_name" data-sortable="true">service name</th>
               <th data-field="service_type" data-sortable="true">service type</th>
               <th data-field="service_version" data-sortable="true">service version</th>
               <th data-field="data_port" data-sortable="true">data port</th>

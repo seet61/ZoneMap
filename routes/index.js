@@ -118,7 +118,7 @@ router.get('/table_versions', auth, function(req, res, next) {
 
 router.get('/get_service_history', auth, function(req, res, next) {
 	debug('/get_service_history get: ' + JSON.stringify(req.query));
-	db.get_service_history(config.get('ZoneMap.dbConfig.connectionString'), req.query.host_ip, req.query.service_name, function(history){
+	db.get_service_history(config.get('ZoneMap.dbConfig.connectionString'), req.query.host_ip, req.query.data_port, req.query.http_port, req.query.service_port, function(history){
       	debug('history: ' + history);
       	res.status(200).json(JSON.stringify({"history":history}));
     });

@@ -28,20 +28,22 @@ function get_versions(connect_string, versions) {
   pg.end();
 }
 
-function get_service_history(connect_string, host_ip, service_name, history) {
+function get_service_history(connect_string, host_ip, data_port, http_port, service_port, history) {
   /* Получение информации для таблицы версий */
   pg.connect(connect_string, function(err, client, done) {
     if(err) {
       debug('error fetching client from pool');
       return console.error('error fetching client from pool', err);
     }
-    var history_sql = 'select service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base, to_char(start_date, \'DD-MM-YYYY HH24:MI:SS\') as start_date, to_char(end_date, \'DD-MM-YYYY HH24:MI:SS\') as end_date ' +
+    var history_sql = 'select service_name, service_type, service_version, data_port, http_port, service_port, system_name, system_version, data_base, to_char(start_date, \'DD-MM-YYYY HH24:MI:SS\') as start_date, to_char(end_date, \'DD-MM-YYYY HH24:MI:SS\') as end_date ' +
                          'from init_servers ins, server_services sss ' +
                         'where ins.serv_id = sss.serv_id ' + 
                           'and ins.host_ip = $1 ' +
-                          'and sss.service_name = $2 ' +
-                        'order by start_date'
-    var history_sql_vars = [host_ip, service_name];
+                          'and sss.data_port = $2 ' +
+                          'and sss.http_port = $3 ' +
+                          'and sss.service_port = $4 ' +
+                        'order by end_date'
+    var history_sql_vars = [host_ip, data_port, http_port, service_port];
     client.query(history_sql, history_sql_vars, function(err, result) {
       //call `done()` to release the client back to the pool
       done();
@@ -50,7 +52,7 @@ function get_service_history(connect_string, host_ip, service_name, history) {
         debug('error running query');
         return console.error('error running query', err);
       }
-      debug(result.rows[0]["start_date"]);
+      //debug(result.rows[0]["start_date"]);
       history(result.rows);
     });
   });

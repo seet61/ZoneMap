@@ -25,7 +25,7 @@ function set_progress() {
   $('#bar').text(Math.round(progress) + "%");
 }
 
-function get_service_history(host, service) {
+function get_service_history(host, data_port, http_port, service_port) {
   progress = 10;
   step = 0;
 
@@ -35,7 +35,9 @@ function get_service_history(host, service) {
     url: "/get_service_history",
     data: {
       host_ip: host,
-      service_name: service
+      data_port: data_port, 
+      http_port: http_port, 
+      service_port: service_port
     },
     success: onGetDataSuccess,
     error: onError
@@ -67,15 +69,19 @@ function onGetDataSuccess(data) {
 $('#get_history_modal').on('show.bs.modal', function (event) {
   var tr = $(event.relatedTarget) // Button that triggered the modal
   var recipient = tr.data('whatever') // Extract info from data-* attributes
-  var host = recipient.split(';')[0];
-  var service = recipient.split(';')[1];
+  recipient = recipient.split(';');
+  var host = recipient[0];
+  var service = recipient[1];
+  var data_port = recipient[2];
+  var http_port = recipient[3];
+  var service_port = recipient[4];
   ////console.log(recipient.split(';'));
   var modal = $(this);
   modal.find('.modal-title').text(host + " " + service);
   
   $table.bootstrapTable('removeAll');
   //Загрузка информации в виде таблицы
-  get_service_history(host, service)
+  get_service_history(host, data_port, http_port, service_port)
 })
 
 function get_database_history(tns_sid, tns_name) {
